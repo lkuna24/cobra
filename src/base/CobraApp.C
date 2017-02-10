@@ -1,8 +1,19 @@
+//Base Classes
 #include "CobraApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
+
+//Kernels
+#include "Migration.h"
+#include "EDiffusion.h"
+#include "Electrostatics.h"
+#include "NeutralityTwo.h"
+
+//Auxkernels
+#include "ConcentrationSum.h"
+
 
 template<>
 InputParameters validParams<CobraApp>()
@@ -20,11 +31,11 @@ CobraApp::CobraApp(InputParameters parameters) :
     MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
-  ModulesApp::registerObjects(_factory);
+  //ModulesApp::registerObjects(_factory);
   CobraApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  ModulesApp::associateSyntax(_syntax, _action_factory);
+  //ModulesApp::associateSyntax(_syntax, _action_factory);
   CobraApp::associateSyntax(_syntax, _action_factory);
 }
 
@@ -45,6 +56,11 @@ extern "C" void CobraApp__registerObjects(Factory & factory) { CobraApp::registe
 void
 CobraApp::registerObjects(Factory & factory)
 {
+  registerKernel(Migration);
+  registerKernel(EDiffusion);
+  registerKernel(Electrostatics);
+  registerKernel(NeutralityTwo);
+  registerAux(ConcentrationSum);
 }
 
 // External entry point for dynamic syntax association
